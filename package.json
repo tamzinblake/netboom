@@ -1,0 +1,20 @@
+{ "name": "netboom"
+, "author" : "Thom Blake <thethomblake@gmail.com> (http://thomblake.com)"
+, "description" : "Multiplayer web-based game based on the crafty engine"
+, "keywords" : [ "game", "shooter" ]
+, "version" : "0.0.0-1"
+, "repository" :
+  { "type" : "git"
+  , "url" : "https://github.com/thomblake/netboom.git"
+  }
+, "bugs" :
+  { "web" : "http://github.com/thomblake/netboom/issues"
+  }
+, "directories" :
+  {
+  }
+, "dependencies" :
+  { "express" : "*"
+  , "yajet" : "*"
+  }
+}
