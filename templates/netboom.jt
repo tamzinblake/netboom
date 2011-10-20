@@ -14,8 +14,7 @@ $)
     </div>
   </div>
   <div id="body">
-    <div id="content">
-        $this.content
+    <div id="cr-stage">&nbsp;
     </div>
   </div>
   <div id="footer">
@@ -24,6 +23,5 @@ $)
   <div class="clearing">&nbsp;</div>
 </div>
 <script src="/js/crafty.js"></script>
-<script>
-</script>
+<script src="/js/netboom.js"></script>
 ${ footer() }
