@@ -1,27 +1,13 @@
 $(IMPORT (header))
 $(IMPORT (footer))
 $(WRAP header()
+<script src="crafty.js"></script>
+<script src="netboom.js"></script>
+<style type="text/css">
+#cr-stage {
+  border: 1px solid black;
+}
+</style>
 $)
-<div id="wrapper">
-  <div id="header">
-    <div id="pre_logo">
-    </div>
-    <div id="logo">
-      <a href="/"><h1>Netboom</h1></a>
-    </div>
-    <div id="post_logo">
-      <a href="/">Home</a> | <a href="/blog">Blog</a> | <a href="/about">About</a> | <a href="/contact">Contact</a>
-    </div>
-  </div>
-  <div id="body">
-    <div id="cr-stage">&nbsp;
-    </div>
-  </div>
-  <div id="footer">
-    &copy; 1997-${ (new Date()).getFullYear() } Thom Blake
-  </div>
-  <div class="clearing">&nbsp;</div>
-</div>
-<script src="/js/crafty.js"></script>
-<script src="/js/netboom.js"></script>
+<div id="cr-stage"></div>
 ${ footer() }
