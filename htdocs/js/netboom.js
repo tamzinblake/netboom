@@ -38,7 +38,7 @@ window.onload = function () {
 
   Crafty.init(defs.fps ,defs.panel.xMax ,defs.panel.yMax)
   Crafty.sprite( 16
-               , '../images/netboom.png'
+               , '/netboom_pub/images/netboom.png'
                , { player: [0,0]
                  , bullet: [0,1]
                  }
@@ -50,7 +50,7 @@ window.onload = function () {
     .attr({w: 100 ,h: 20 ,x: 150 ,y: 120})
     .text('Loading')
     .css({'text-align': 'center'})
-    Crafty.load(['../images/netboom.png'] ,function() {
+    Crafty.load(['/netboom_pub/images/netboom.png'] ,function() {
       Crafty.scene('main')
     })
   })
