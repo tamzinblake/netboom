@@ -1,8 +1,8 @@
 $(IMPORT (header))
 $(IMPORT (footer))
 $(WRAP header()
-<script src="crafty.js"></script>
-<script src="netboom.js"></script>
+<script src="$this.root/js/crafty.js"></script>
+<script src="$this.root/js/netboom.js"></script>
 <style type="text/css">
 #cr-stage {
   border: 1px solid black;
