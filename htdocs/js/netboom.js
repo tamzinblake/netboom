@@ -1,7 +1,7 @@
 /* global Crafty */
 var devConsole
   , logConsole = function (config) {
-      devConsole.innerHtml = 'x: ' + config.x + '<br>'
+      devConsole.innerHTML = 'x: ' + config.x + '<br>'
                            + 'y: ' + config.y + '<br>'
     }
 window.onload = function () {
@@ -119,7 +119,6 @@ window.onload = function () {
                       case  1: move.down = false ;move.up = true  ;break
                     }
                     move.shoot = true;
-                    logConsole({x: me.x, y: me.y})
                   })
                   return me
                 }
@@ -193,6 +192,7 @@ window.onload = function () {
                          : me.y >= me.yMax ? me.yMax-1 : me.y
                     me.shootSince++
                     if (move.shoot && me.shootDelay < me.shootSince) me.shoot()
+                    if (me.log) logConsole({x: me.x, y: me.y})
                   })
                   return me
                 }
@@ -212,6 +212,8 @@ window.onload = function () {
                  .CustomControls()
                  .Character()
                  .origin(defs.player.xOrigin ,defs.player.yOrigin)
+
+    player.log = true
 
     var enemy = Crafty.e( '2D'
                         , 'DOM'
