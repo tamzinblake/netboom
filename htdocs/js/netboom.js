@@ -158,8 +158,8 @@ window.onload = function () {
                                          , 'animate'
                                          , 'collision'
                                          )
-                                 .attr({ x: me.x
-                                       , y: me.y
+                                 .attr({ x: me.x + me._origin.x
+                                       , y: me.y + me._origin.y
                                        , rotation: me.rotation
                                        , xMin: defs.panel.xMin
                                        , yMin: defs.panel.yMin
