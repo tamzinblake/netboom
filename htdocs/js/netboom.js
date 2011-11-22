@@ -1,5 +1,11 @@
 /* global Crafty */
+var devConsole
+  , logConsole = function (config) {
+      devConsole.innerHtml = 'x: ' + config.x + '<br>'
+                           + 'y: ' + config.y + '<br>'
+    }
 window.onload = function () {
+  devConsole = document.getElementById('dev_console')
   var defs = { fps: 60
              , panel: { xMin: 0
                       , xMax: 400
@@ -113,6 +119,7 @@ window.onload = function () {
                       case  1: move.down = false ;move.up = true  ;break
                     }
                     move.shoot = true;
+                    logConsole({x: me.x, y: me.y})
                   })
                   return me
                 }

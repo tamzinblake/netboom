@@ -10,4 +10,5 @@ $(WRAP header()
 </style>
 $)
 <div id="cr-stage"></div>
+<div id="dev_console"></div>
 ${ footer() }
