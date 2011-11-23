@@ -29,6 +29,7 @@ window.onload = function () {
                                      , 'player'
                                      , 'EnemyAI'
                                      , 'Character'
+                                     , 'controls'
                                      , 'animate'
                                      , 'collision'
                                      ].join(',')
