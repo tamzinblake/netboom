@@ -29,7 +29,6 @@ window.onload = function () {
                                      , 'player'
                                      , 'EnemyAI'
                                      , 'Character'
-                                     , 'controls'
                                      , 'animate'
                                      , 'collision'
                                      ].join(',')
@@ -192,10 +191,11 @@ window.onload = function () {
                     me.reset()
                   }
                   me.reset = function() {
-
                     for (var prop in defs.player.attr) {
                       me[prop] = defs.player.attr[prop]
                     }
+                    me.x = Math.rand()*(me.xMax-me.xMin)/2+me.xMin
+                    me.y = Math.rand()*(me.yMax-me.yMin)/2+me.yMin
                   }
                   me.shoot = function () {
                     if (me._bullets.length >= me.maxBullets) return
@@ -255,7 +255,7 @@ window.onload = function () {
               }
             )
 
-    var player = Crafty.e(defs.player.components + ',CustomControls')
+    var player = Crafty.e(defs.player.components + ',controls,CustomControls')
                  .attr(copy(defs.player.attr))
                  .CustomControls()
                  .Character()
@@ -264,11 +264,15 @@ window.onload = function () {
     player.healthBar = true
     player.log = true
 
+    player.reset()
+
     var enemy = Crafty.e(defs.player.components + ',EnemyAI')
                 .attr(copy(defs.player.attr))
                 .EnemyAI()
                 .Character()
                 .origin(defs.player.xOrigin ,defs.player.yOrigin)
+
+    enemy.reset()
 
     var healthBar = Crafty.e('2D,DOM,Color,animate')
                     .attr({ x: defs.panel.xMax - defs.player.attr.health
