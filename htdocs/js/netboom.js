@@ -1,4 +1,4 @@
-/* global Crafty */
+/* global Crafty imagesRoot*/
 var devConsole
   , logConsole = function (config) {
       devConsole.innerHTML = 'x: ' + config.x + '<br>'
@@ -64,13 +64,13 @@ window.onload = function () {
 
   Crafty.init(defs.fps ,defs.panel.xMax ,defs.panel.yMax)
   Crafty.sprite( 16
-               , 'netboom.png'
+               , imagesRoot + 'netboom.png'
                , { player: [0,0]
                  }
                )
 
   Crafty.sprite( 2
-               , 'bullet.png'
+               , imagesRoot + 'bullet.png'
                , { bullet: [0,0]
                  }
                )
@@ -81,7 +81,7 @@ window.onload = function () {
     .attr({w: 100 ,h: 20 ,x: 150 ,y: 120})
     .text('Loading')
     .css({'text-align': 'center'})
-    Crafty.load(['netboom.png'] ,function() {
+    Crafty.load([imagesRoot + 'netboom.png', imagesRoot + 'bullet.png'] ,function() {
       Crafty.scene('main')
     })
   })

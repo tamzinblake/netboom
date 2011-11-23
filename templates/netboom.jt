@@ -2,6 +2,9 @@ $(IMPORT (header))
 $(IMPORT (footer))
 $(WRAP header()
 <script src="$this.root/js/crafty.js"></script>
+<script>
+var images_root = '/netboom_pub/images/'
+</script>
 <script src="$this.root/js/netboom.js"></script>
 <style type="text/css">
 #cr-stage {
