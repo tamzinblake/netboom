@@ -194,8 +194,8 @@ window.onload = function () {
                     for (var prop in defs.player.attr) {
                       me[prop] = defs.player.attr[prop]
                     }
-                    me.x = Math.random()*(me.xMax-me.xMin)/2+me.xMin
-                    me.y = Math.random()*(me.yMax-me.yMin)/2+me.yMin
+                    me.x = Math.random()*(me.xMax-me.xMin)+me.xMin
+                    me.y = Math.random()*(me.yMax-me.yMin)+me.yMin
                   }
                   me.shoot = function () {
                     if (me._bullets.length >= me.maxBullets) return
