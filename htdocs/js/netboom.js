@@ -3,6 +3,7 @@ var devConsole
   , logConsole = function (config) {
       devConsole.innerHTML = 'x: ' + config.x + '<br>'
                            + 'y: ' + config.y + '<br>'
+                           + 'health: ' + config.health + '<br>'
     }
 window.onload = function () {
   devConsole = document.getElementById('dev_console')
@@ -12,20 +13,39 @@ window.onload = function () {
                       , yMin: 0
                       , yMax: 400
                       }
+             , bullet: { v: 2.5
+                       , components: [ '2D'
+                                     , 'DOM'
+                                     , 'Bullet'
+                                     , 'bullet'
+                                     , 'animate'
+                                     , 'collision'
+                                     ].join(',')
+                       }
              , player: { w: 16
                        , h: 16
+                       , components: [ '2D'
+                                     , 'DOM'
+                                     , 'player'
+                                     , 'EnemyAI'
+                                     , 'Character'
+                                     , 'animate'
+                                     , 'collision'
+                                     ].join(',')
                        , attr: { x: 192
                                , y: 192
                                , z: 1
                                , v: 0
                                , rotation: 0
-                               , vMax: 5
-                               , vMin: .2
+                               , vMax: 2
+                               , vMin: .02
                                , rotAcc: 2
-                               , linAcc: 1
-                               , drag: .2
-                               , shootDelay: 30
+                               , linAcc: .5
+                               , drag: .08
+                               , shootDelay: 20
                                , shootSince: 0
+                               , maxBullets: 8
+                               , health: 20
                                }
                        , controls: { up   : Crafty.keys.UP_ARROW
                                    , down : Crafty.keys.DOWN_ARROW
@@ -44,9 +64,14 @@ window.onload = function () {
 
   Crafty.init(defs.fps ,defs.panel.xMax ,defs.panel.yMax)
   Crafty.sprite( 16
-               , '/netboom_pub/images/netboom.png'
+               , 'netboom.png'
                , { player: [0,0]
-                 , bullet: [0,1]
+                 }
+               )
+
+  Crafty.sprite( 2
+               , 'bullet.png'
+               , { bullet: [0,0]
                  }
                )
 
@@ -56,7 +81,7 @@ window.onload = function () {
     .attr({w: 100 ,h: 20 ,x: 150 ,y: 120})
     .text('Loading')
     .css({'text-align': 'center'})
-    Crafty.load(['/netboom_pub/images/netboom.png'] ,function() {
+    Crafty.load(['netboom.png'] ,function() {
       Crafty.scene('main')
     })
   })
@@ -72,7 +97,7 @@ window.onload = function () {
                     return function (e) {
                       var move = me._move
                       for (var p in controls) {
-                        if (e.keyCode == controls[p]) move[p] = value;
+                        if (e.keyCode == controls[p]) move[p] = value
                       }
                     }
                   }
@@ -107,6 +132,7 @@ window.onload = function () {
                     return dist < 16 ? -1 : dist > 32 ? 1 : 0
                   }
                   me.bind('enterframe' ,function (e) {
+                    if (me.pause) return
                     var move = me._move
                     switch(me.face(player)) {
                       case -1: move.left = true  ;move.right = false ;break
@@ -118,7 +144,7 @@ window.onload = function () {
                       case  0: move.down = false ;move.up = false ;break
                       case  1: move.down = false ;move.up = true  ;break
                     }
-                    move.shoot = true;
+                    move.shoot = true
                   })
                   return me
                 }
@@ -129,12 +155,17 @@ window.onload = function () {
             , { Bullet: function () {
                   var me = this
                   me.die = function () {
+                    me.parent.removeBullet(me)
                     me.destroy()
                   }
-                  me.bind('enterframe' ,function (e) {
+                  me.stepForward = function (step) {
                     me.rotation %= 360
-                    me.y -= Math.sin((90+me.rotation)/180*Math.PI)*me.v
-                    me.x -= Math.cos((90+me.rotation)/180*Math.PI)*me.v
+                    me.y -= Math.sin((90+me.rotation)/180*Math.PI)*step
+                    me.x -= Math.cos((90+me.rotation)/180*Math.PI)*step
+                    return me
+                  }
+                  me.bind('enterframe' ,function (e) {
+                    me.stepForward(me.v)
                     if ( me.x <= me.xMin
                       || me.x >= me.xMax
                       || me.y <= me.yMin
@@ -150,26 +181,40 @@ window.onload = function () {
             , { Character: function () {
                   var me = this
                   me._move = {}
+                  me._bullets = []
+                  me.removeBullet = function (bullet) {
+                    me._bullets = me._bullets.filter(function (el, idx, arr) {
+                                    return el !== bullet
+                                  })
+                  }
+                  me.die = function () {
+                    me.reset()
+                  }
+                  me.reset = function() {
+
+                    for (var prop in defs.player.attr) {
+                      me[prop] = defs.player.attr[prop]
+                    }
+                  }
                   me.shoot = function () {
-                    var bullet = Crafty.e( '2D'
-                                         , 'DOM'
-                                         , 'Bullet'
-                                         , 'bullet'
-                                         , 'animate'
-                                         , 'collision'
+                    if (me._bullets.length >= me.maxBullets) return
+                    if (me.shootDelay > me.shootSince) return
+                    var bullet = Crafty.e( defs.bullet.components
                                          )
-                                 .attr({ x: me.x + me._origin.x
-                                       , y: me.y + me._origin.y
+                                 .attr({ x: me.x + me._origin.x-1
+                                       , y: me.y + me._origin.y-1
                                        , rotation: me.rotation
                                        , xMin: defs.panel.xMin
                                        , yMin: defs.panel.yMin
                                        , xMax: defs.panel.xMax
                                        , yMax: defs.panel.yMax
-                                       , v: 10
+                                       , v: defs.bullet.v
                                        , parent: me
                                        })
                                  .Bullet()
-                                 .origin(1,1)
+                                 .origin(1.5,1.5)
+                                 .stepForward(me.w/2)
+                    me._bullets.push(bullet)
                     me.shootSince = 0
                   }
                   me.bind('enterframe' ,function (e) {
@@ -191,42 +236,46 @@ window.onload = function () {
                     me.y = me.y <= me.yMin ? me.yMin+1
                          : me.y >= me.yMax ? me.yMax-1 : me.y
                     me.shootSince++
-                    if (move.shoot && me.shootDelay < me.shootSince) me.shoot()
-                    if (me.log) logConsole({x: me.x, y: me.y})
+                    if (move.shoot) me.shoot()
+                    if (me.health <= 0) me.die()
+                    if (me.healthBar) healthBar.w = me.health
+                    if (me.log) logConsole({x: me.x ,y: me.y ,health: me.health})
+                  })
+                  me.onHit('bullet' ,function (e) {
+                    for (var i = 0 ;i < e.length ;i++) {
+                      if (e[i].obj.parent[0] !== me[0]) {
+                        me.health--
+                        e[i].obj.die()
+                      }
+                    }
                   })
                   return me
                 }
               }
             )
 
-    var player = Crafty.e( '2D'
-                         , 'DOM'
-                         , 'player'
-                         , 'controls'
-                         , 'CustomControls'
-                         , 'Character'
-                         , 'animate'
-                         , 'collision'
-                         )
+    var player = Crafty.e(defs.player.components + ',CustomControls')
                  .attr(copy(defs.player.attr))
                  .CustomControls()
                  .Character()
                  .origin(defs.player.xOrigin ,defs.player.yOrigin)
 
+    player.healthBar = true
     player.log = true
 
-    var enemy = Crafty.e( '2D'
-                        , 'DOM'
-                        , 'player'
-                        , 'EnemyAI'
-                        , 'Character'
-                        , 'animate'
-                        , 'collision'
-                        )
+    var enemy = Crafty.e(defs.player.components + ',EnemyAI')
                 .attr(copy(defs.player.attr))
                 .EnemyAI()
                 .Character()
                 .origin(defs.player.xOrigin ,defs.player.yOrigin)
+
+    var healthBar = Crafty.e('2D,DOM,Color,animate')
+                    .attr({ x: defs.panel.xMax - defs.player.attr.health
+                          , y: 0
+                          , h: 4
+                          , w: player.health
+                          })
+                    .color('#ff0000')
 
   })
 
